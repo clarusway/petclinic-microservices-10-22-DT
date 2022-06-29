@@ -15,13 +15,13 @@
 
   - name: deploy petclinic application
     shell: |
-      helm plugin install https://github.com/hypnoglow/helm-s3.git
+      helm plugin install https://github.com/hypnoglow/helm-s3.git || true
       kubectl create ns petclinic-qa
       kubectl delete secret regcred -n petclinic-qa || true
       kubectl create secret generic regcred -n petclinic-qa \
         --from-file=.dockerconfigjson=/home/ubuntu/.docker/config.json \
         --type=kubernetes.io/dockerconfigjson
-      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-dt/stable/myapp/
+      AWS_REGION=$AWS_REGION helm repo add stable-petclinic s3://petclinic-helm-charts-dt/stable/myapp/ || true
       AWS_REGION=$AWS_REGION helm repo update
       AWS_REGION=$AWS_REGION helm upgrade --install \
         petclinic-app-release stable-petclinicapp-dt/petclinic_chart --version ${BUILD_NUMBER} \
